@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SalesWebMVC.Models;
 using SalesWebMVC.Services;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,23 @@ namespace SalesWebMVC.Controllers
             _sellerService = sellerService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index() /*IActionResult é o tipo de retorno de todas as ações*/ 
         {
             var list = _sellerService.FindAll();
             return View(list);
+        }
+
+        public IActionResult Create() /*IActionResult é o tipo de retorno de todas as ações*/
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Seller seller) /*IActionResult é o tipo de retorno de todas as ações*/
+        {
+            _sellerService.Insert(seller);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
