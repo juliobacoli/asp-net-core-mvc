@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalesWebMVC.Models;
+using SalesWebMVC.Models.ViewModels;
 using SalesWebMVC.Services;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,12 @@ namespace SalesWebMVC.Controllers
     public class SellersController : Controller
     {
         private readonly SellerService _sellerService;
+        private readonly DepartmentService _departmentService;
 
-        public SellersController(SellerService sellerService)
+        public SellersController(SellerService sellerService, DepartmentService departmentService)
         {
             _sellerService = sellerService;
+            _departmentService = departmentService;
         }
 
         public IActionResult Index() /*IActionResult é o tipo de retorno de todas as ações*/ 
@@ -25,6 +28,8 @@ namespace SalesWebMVC.Controllers
 
         public IActionResult Create() /*IActionResult é o tipo de retorno de todas as ações*/
         {
+            var departments = _departmentService.FindAll();
+            var viewModel = new SellerFormViewModel { Departments = departments };
             return View();
         }
 
