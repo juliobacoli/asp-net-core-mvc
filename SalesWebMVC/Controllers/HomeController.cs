@@ -18,8 +18,8 @@ namespace SalesWebMVC.Controllers
         public IActionResult About()
         {
             ViewData["Message"] = "Testando esse trem veio pra ver se aparece na pagina about memo.";
-            ViewData["Nome"] = "Julio Santana";
-            ViewData["Email"] = "julio@teste.com.br";
+            ViewData["Nome"] = "Julio Bacoli";
+            ViewData["Email"] = "juliosantanabacoli@gmail.com";
 
             return View();
         }
