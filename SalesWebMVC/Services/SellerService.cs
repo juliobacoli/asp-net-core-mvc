@@ -2,6 +2,7 @@
 using SalesWebMVC.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace SalesWebMVC.Services
 {
@@ -27,7 +28,7 @@ namespace SalesWebMVC.Services
 
         public Seller FindById(int id)
         {
-            return _context.Seller.FirstOrDefault(obj => obj.Id == id);
+            return _context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id); //Esse Include faz um join com as tabelas, e nao pertence ao Linq nativo, mas ao EF Core
         }
 
         public void Remove(int id)

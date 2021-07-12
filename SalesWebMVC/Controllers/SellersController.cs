@@ -20,7 +20,7 @@ namespace SalesWebMVC.Controllers
             _departmentService = departmentService;
         }
 
-        public IActionResult Index() /*IActionResult é o tipo de retorno de todas as ações*/ 
+        public IActionResult Index() /*IActionResult é o tipo de retorno de todas as ações*/
         {
             var list = _sellerService.FindAll();
             return View(list);
@@ -30,7 +30,7 @@ namespace SalesWebMVC.Controllers
         {
             var departments = _departmentService.FindAll();
             var viewModel = new SellerFormViewModel { Departments = departments };
-            return View();
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -44,10 +44,10 @@ namespace SalesWebMVC.Controllers
         //Essa é a confirmação, não a ação de deleção propriamente dita
         public IActionResult Delete(int? id) //a interrogação indica que o parametro é opcional
         {
-            if(id == null) { return NotFound(); }
+            if (id == null) { return NotFound(); }
 
             var obj = _sellerService.FindById(id.Value);
-            if(obj == null) { return NotFound(); }
+            if (obj == null) { return NotFound(); }
 
             return View(obj);
         }
@@ -58,6 +58,16 @@ namespace SalesWebMVC.Controllers
         {
             _sellerService.Remove(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Details(int? id)
+        {
+            if (id == null) { return NotFound(); }
+
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null) { return NotFound(); }
+
+            return View(obj);
         }
     }
 }
