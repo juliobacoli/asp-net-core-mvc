@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace SalesWebMVC.Controllers
 {
@@ -45,11 +46,16 @@ namespace SalesWebMVC.Controllers
         //Essa é a confirmação, não a ação de deleção propriamente dita
         public IActionResult Delete(int? id) //a interrogação indica que o parametro é opcional
         {
-            if (id == null) { return NotFound(); }
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não foi fornecido." });
+            }
 
             var obj = _sellerService.FindById(id.Value);
-            if (obj == null) { return NotFound(); }
-
+            if (obj == null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
+            }
             return View(obj);
         }
 
@@ -63,19 +69,31 @@ namespace SalesWebMVC.Controllers
 
         public IActionResult Details(int? id)
         {
-            if (id == null) { return NotFound(); }
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não foi fornecido." });
+            }
 
             var obj = _sellerService.FindById(id.Value);
-            if (obj == null) { return NotFound(); }
+            if (obj == null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado." });
+            }
 
             return View(obj);
         }
 
         public IActionResult Edit(int? id)
         {
-            if (id == null) { return NotFound(); }
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não foi fornecido." });
+            }
             var obj = _sellerService.FindById(id.Value);
-            if (obj == null) { return NotFound(); }
+            if (obj == null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado." });
+            }
 
             List<Department> departments = _departmentService.FindAll();
             SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
@@ -87,19 +105,37 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Seller seller)
         {
-            if (id != seller.Id) { return BadRequest(); }
+            if (id != seller.Id) 
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não corresponde." });
+            }
 
             try
             {
                 _sellerService.Update(seller);
                 return RedirectToAction(nameof(Index));
-
             }
-            catch (NotFoundException)
+            catch (ApplicationException e)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
+            //*O SUPERTIPO DO CATCH JA RETORNA AMBAS AS MENSAGENS POIS ELAS SÃO AS MESMAS, SENDO ASSIM NAO PRECISA DESTE SEGUNDO CATCH*
+            //catch (DbConcurrencyException e)
+            //{
+            //    return RedirectToAction(nameof(Error), new { message = e.Message});
+            //}
 
+        }
+
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel
+            {
+                Message = message,
+                //Macete do framework  pra pegar o Id da requisição
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier //?? coalecencia nula 
+            };
+            return View(viewModel);
         }
     }
 }
