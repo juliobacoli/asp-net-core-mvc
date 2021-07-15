@@ -12,16 +12,22 @@ namespace SalesWebMVC.Models
         public int Id { get; set; }
 
         [Display(Name = "Nome")]
+        [Required(ErrorMessage = "{0} é obrigatório")]
         public string Name { get; set; }
 
         [DataType(DataType.EmailAddress)]
+        [Required(ErrorMessage = "{0} é obrigatório")]
+        [EmailAddress(ErrorMessage = "Enter a valid email")]
         public string Email { get; set; }
 
         [Display(Name = "Data de aniversário")] //Definição de labels personalizadas
         [DataType(DataType.Date)]
+        [Required(ErrorMessage = "{0} é obrigatório")] // {0} pega o atributo automaricamento
         public DateTime BirthDate { get; set; }
 
         [Display(Name = "Salário Base")]
+        [Required(ErrorMessage = "{0} é obrigatório")]
+        [Range(1.0, 50000.0, ErrorMessage = "{0} must be from {1} to {2}")] //{1} primeiro valor e {2} segundo valor
         [DisplayFormat(DataFormatString = "{0:F2}")] //F2 indica 2 casas decimais
         public double BaseSalary { get; set; }
 
