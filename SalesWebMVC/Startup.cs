@@ -39,15 +39,17 @@ namespace SalesWebMVC
             services.AddDbContext<SalesWebMVCContext>(options =>
                     options.UseMySql(Configuration.GetConnectionString("SalesWebMvcContext"), builder => builder.MigrationsAssembly("SalesWebMVC"))); //SalesWebMVC é o nome do assembly (nome do projeto)
                                                                                                                                                       //SalesWebMvcContext é o nome da classe que está dentro da pasta Data
-
+            //INJEÇÃO DE DEPENDÊNCIA
             services.AddScoped<SeedingService>();
             services.AddScoped<SellerService>();
             services.AddScoped<DepartmentService>();
+            services.AddScoped<SalesRecordService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, SeedingService seedingService)
         {
+            //CONFIGURANDO LOCALIZAÇÃO
             var ptBr = new CultureInfo("pt-BR");
             var localizarionOption = new RequestLocalizationOptions
             {
