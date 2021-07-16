@@ -39,11 +39,11 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Seller seller) /*IActionResult é o tipo de retorno de todas as ações*/
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 var departments = await _departmentService.FindAllAsync();
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
-                return View(viewModel); 
+                return View(viewModel);
             }
 
             await _sellerService.InsertAsync(seller);
@@ -70,8 +70,17 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            await _sellerService.RemoveAsync(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _sellerService.RemoveAsync(id);
+                return RedirectToAction(nameof(Index));
+
+            }
+            catch (IntegrityException e)
+            {
+                return RedirectToAction(nameof(Error), new { message = e.Message });
+
+            }
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -118,7 +127,7 @@ namespace SalesWebMVC.Controllers
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 return View(viewModel);
             }
-            if (id != seller.Id) 
+            if (id != seller.Id)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não corresponde." });
             }
